@@ -12,10 +12,11 @@ export type AdminDocument = Admin &
 
 @Schema({ timestamps: true })
 export class Admin {
-  @Prop({ required: true, trim: true })
+  @Prop({ type: String, required: true, trim: true })
   fullName: string;
 
   @Prop({
+    type: String,
     required: true,
     unique: true,
     lowercase: true,
@@ -24,10 +25,21 @@ export class Admin {
   })
   email: string;
 
-  @Prop({ required: true, minlength: 8, maxlength: 64, select: false })
+  @Prop({
+    type: String,
+    required: true,
+    minlength: 8,
+    maxlength: 64,
+    select: false,
+  })
   password: string;
 
-  @Prop({ required: true, enum: AdminRoles, default: AdminRoles.ADMIN })
+  @Prop({
+    type: String,
+    required: true,
+    enum: AdminRoles,
+    default: AdminRoles.ADMIN,
+  })
   role: AdminRoles;
 }
 
