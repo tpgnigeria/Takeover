@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-import { TakeoverRegistrationDto } from './dto/takeover-registration.dto';
+import { TakeoverDto } from './dto/create-takeover.dto';
 
 @Injectable()
 export class RegistrationService {
-  createTakeover(body: TakeoverRegistrationDto) {
+  createTakeover(body: TakeoverDto) {
     return 'This action adds a new registration';
   }
 

@@ -45,7 +45,7 @@ export class Camp {
   school?: string;
 
   @Prop({ type: String, required: true, trim: true })
-  emergency: string;
+  emergencyContact: string;
 
   @Prop({ type: Boolean, required: true })
   healthChallenge: boolean;

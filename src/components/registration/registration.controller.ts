@@ -9,14 +9,14 @@ import {
 } from '@nestjs/common';
 
 import { RegistrationService } from './registration.service';
-import { TakeoverRegistrationDto } from './dto/takeover-registration.dto';
+import { TakeoverDto } from './dto/create-takeover.dto';
 
 @Controller('registration')
 export class RegistrationController {
   constructor(private readonly registrationService: RegistrationService) {}
 
   @Post()
-  create(@Body() createTakeoverDto: TakeoverRegistrationDto) {
+  create(@Body() createTakeoverDto: TakeoverDto) {
     return this.registrationService.createTakeover(createTakeoverDto);
   }
 

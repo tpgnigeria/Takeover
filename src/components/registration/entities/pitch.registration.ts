@@ -29,9 +29,6 @@ export class Pitch {
   @Prop({ type: Number, required: true, min: 18, max: 40 })
   age: number;
 
-  @Prop({ type: String, required: true, trim: true })
-  location: string;
-
   @Prop({ type: Boolean, required: true })
   exists: boolean;
 
@@ -57,10 +54,19 @@ export class Pitch {
     type: String,
     trim: true,
     required: function (this: Pitch) {
+      return this.exists === true;
+    },
+  })
+  location: string;
+
+  @Prop({
+    type: String,
+    trim: true,
+    required: function (this: Pitch) {
       return this.exists === false;
     },
   })
-  proposedBusinessName?: string;
+  proposedName?: string;
 
   @Prop({ type: String, required: true, trim: true })
   description: string;

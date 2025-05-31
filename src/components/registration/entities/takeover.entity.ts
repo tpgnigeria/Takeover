@@ -49,7 +49,13 @@ export class Takeover {
   })
   invite: InviteSource;
 
-  @Prop({ type: String, trim: true })
+  @Prop({
+    type: String,
+    trim: true,
+    required: function (this: Takeover) {
+      return this.invite === 'other';
+    },
+  })
   inviteOther?: string;
 
   @Prop({ type: String, trim: true })
