@@ -16,7 +16,7 @@ export class RegistrationController {
   constructor(private readonly registrationService: RegistrationService) {}
 
   @Post()
-  create(@Body() createTakeoverDto: TakeoverDto) {
+  createTakeover(@Body() createTakeoverDto: TakeoverDto) {
     return this.registrationService.createTakeover(createTakeoverDto);
   }
 

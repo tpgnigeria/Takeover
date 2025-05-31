@@ -11,8 +11,9 @@ import { Admin, AdminDocument } from './entities/admin.entity';
 import { AppResponse } from '../../common/types';
 import { successResponse } from '../../common/app';
 import { SignInDto } from './dto/sign-in.dto';
-import { BadRequestException } from '../../common/exceptions';
 import { AdminRoles, TokenResponse } from './types';
+import { Utils } from '../../common/utils';
+import { ADMIN_ATTRIBUTES } from '../../common/constants';
 
 @Injectable()
 export class AdminService {
@@ -50,10 +51,12 @@ export class AdminService {
       const newAdmin = new this.adminModel(createAdminDto);
       const savedAdmin = await newAdmin.save();
 
-      const { _id, fullName, email, role, createdAt } = savedAdmin.toObject();
       return successResponse(
         'Admin created successfully',
-        { _id, fullName, email, role, createdAt },
+        Utils.pickAttributes(
+          savedAdmin.toObject(),
+          ADMIN_ATTRIBUTES as (keyof Admin)[]
+        ),
         HttpStatus.CREATED,
       );
     } catch (error) {
