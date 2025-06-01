@@ -19,14 +19,4 @@ export class RegistrationController {
   createTakeover(@Body() createTakeoverDto: TakeoverDto) {
     return this.registrationService.createTakeover(createTakeoverDto);
   }
-
-  @Get()
-  findAll() {
-    return this.registrationService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.registrationService.findOne(+id);
-  }
 }

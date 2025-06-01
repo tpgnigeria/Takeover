@@ -8,12 +8,14 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin, AdminDocument } from './entities/admin.entity';
+import { SignInDto } from './dto/sign-in.dto';
+
 import { AppResponse } from '../../common/types';
 import { successResponse } from '../../common/app';
-import { SignInDto } from './dto/sign-in.dto';
 import { AdminRoles, TokenResponse } from './types';
 import { Utils } from '../../common/utils';
 import { ADMIN_ATTRIBUTES } from '../../common/constants';
+import { AdminResponse } from '../registration/types';
 
 @Injectable()
 export class AdminService {
@@ -46,7 +48,7 @@ export class AdminService {
 
   async create(
     createAdminDto: CreateAdminDto,
-  ): Promise<AppResponse<Partial<Admin>>> {
+  ): Promise<AppResponse<AdminResponse>> {
     try {
       const newAdmin = new this.adminModel(createAdminDto);
       const savedAdmin = await newAdmin.save();
