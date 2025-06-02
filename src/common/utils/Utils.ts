@@ -2,13 +2,20 @@ import { HttpStatus } from '@nestjs/common';
 import { successResponse } from '../app';
 import { AppResponse, PaginatedResponse } from '../types';
 import { Model, Document } from 'mongoose';
+import { NotFoundException } from '../exceptions';
 
-export class Utils {
-  static pickAttributes<T, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> {
-    return keys.reduce((acc, key) => {
-      acc[key] = obj[key];
-      return acc;
-    }, {} as Pick<T, K>);
+export class AppUtils {
+  static pickAttributes<T, K extends keyof T>(
+    obj: T,
+    keys: readonly K[],
+  ): Pick<T, K> {
+    return keys.reduce(
+      (acc, key) => {
+        acc[key] = obj[key];
+        return acc;
+      },
+      {} as Pick<T, K>,
+    );
   }
 
   static paginateResponse<T = any>(
@@ -36,11 +43,13 @@ export class Utils {
   static calcSkip(page: number, limit: number) {
     return (page - 1) * limit;
   }
+}
 
+export class DBUtils {
   static async createEntity<T extends Document, Dto, K extends keyof T>(
-    model: Model<T>, // the Mongoose model
-    dto: Dto, // DTO used for creation
-    attributes: readonly K[], // fields to return
+    model: Model<T>,
+    dto: Dto,
+    attributes: readonly K[],
     message: string,
   ): Promise<AppResponse<Pick<T, K>>> {
     const instance = new model(dto);
@@ -50,8 +59,47 @@ export class Utils {
 
     return successResponse(
       message,
-      this.pickAttributes<T, K>(plain, attributes),
+      AppUtils.pickAttributes(plain, attributes),
       HttpStatus.CREATED,
+    );
+  }
+
+  static async findEntity<T, K extends keyof T>(
+    model: Model<T>,
+    attributes: readonly K[],
+    message: string,
+  ): Promise<AppResponse<Pick<T, K>[]>> {
+    const entities = await model.find().lean().exec();
+
+    if (!entities.length) {
+      return successResponse('No Records Found', [], HttpStatus.NOT_FOUND);
+    }
+
+    return successResponse(
+      message,
+      entities.map((item) =>
+        AppUtils.pickAttributes(item as T, [...attributes]),
+      ),
+    );
+  }
+
+  static async findOneEntity<T, K extends keyof T>(
+    model: Model<T>,
+    filter: Record<string, any>,
+    attributes: readonly K[],
+    message: string,
+    errorMessage: string = 'Entity Not Found',
+  ): Promise<AppResponse<Pick<T, K> | null>> {
+    const entity = await model.findOne(filter).lean().exec();
+
+    if (!entity) {
+      throw new NotFoundException(errorMessage, '');
+    }
+
+    return successResponse(
+      message,
+      AppUtils.pickAttributes(entity as T, [...attributes]),
+      HttpStatus.OK,
     );
   }
 }

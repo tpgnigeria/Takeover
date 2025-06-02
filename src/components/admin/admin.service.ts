@@ -13,7 +13,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { AppResponse } from '../../common/types';
 import { successResponse } from '../../common/app';
 import { AdminRoles, TokenResponse } from './types';
-import { Utils } from '../../common/utils';
+import { AppUtils, DBUtils } from '../../common/utils';
 import { ADMIN_ATTRIBUTES } from '../../common/constants';
 import { AdminResponse } from '../registration/types';
 
@@ -50,7 +50,7 @@ export class AdminService {
     createAdminDto: CreateAdminDto,
   ): Promise<AppResponse<AdminResponse>> {
     try {
-      return Utils.createEntity<
+      return DBUtils.createEntity<
         AdminDocument,
         CreateAdminDto,
         keyof AdminDocument

@@ -9,7 +9,7 @@ import { Camp, CampDocument } from './entities/camp.entities';
 import { Pitch, PitchDocument } from './entities/pitch.registration';
 import { PitchDto } from './dto/create-pitch.dto';
 
-import { Utils } from '../../common/utils';
+import { AppUtils, DBUtils } from '../../common/utils';
 import { AppResponse } from '../../common/types';
 import {
   CAMP_ATTRIBUTES,
@@ -32,7 +32,7 @@ export class RegistrationService {
   async createTakeover(
     body: TakeoverDto,
   ): Promise<AppResponse<TakeoverResponse>> {
-    return Utils.createEntity<
+    return DBUtils.createEntity<
       TakeoverDocument,
       TakeoverDto,
       keyof TakeoverDocument
@@ -46,7 +46,7 @@ export class RegistrationService {
 
   async createCamp(body: CampDto): Promise<AppResponse<CampResponse>> {
     try {
-      return Utils.createEntity<CampDocument, CampDto, keyof CampDocument>(
+      return DBUtils.createEntity<CampDocument, CampDto, keyof CampDocument>(
         this.campModel,
         body,
         CAMP_ATTRIBUTES,
@@ -59,11 +59,7 @@ export class RegistrationService {
 
   async createPitch(body: PitchDto): Promise<AppResponse<PitchResponse>> {
     try {
-      return Utils.createEntity<
-        PitchDocument,
-        PitchDto,
-        keyof PitchDocument
-      >(
+      return DBUtils.createEntity<PitchDocument, PitchDto, keyof PitchDocument>(
         this.pitchModel,
         body,
         PITCH_ATTRIBUTES,
