@@ -32,11 +32,7 @@ export class RegistrationService {
   async createTakeover(
     body: TakeoverDto,
   ): Promise<AppResponse<TakeoverResponse>> {
-    return DBUtils.createEntity<
-      TakeoverDocument,
-      TakeoverDto,
-      keyof TakeoverDocument
-    >(
+    return DBUtils.createEntity(
       this.takeoverModel,
       body,
       TAKEOVER_ATTRIBUTES,
@@ -46,7 +42,7 @@ export class RegistrationService {
 
   async createCamp(body: CampDto): Promise<AppResponse<CampResponse>> {
     try {
-      return DBUtils.createEntity<CampDocument, CampDto, keyof CampDocument>(
+      return DBUtils.createEntity(
         this.campModel,
         body,
         CAMP_ATTRIBUTES,
@@ -59,7 +55,7 @@ export class RegistrationService {
 
   async createPitch(body: PitchDto): Promise<AppResponse<PitchResponse>> {
     try {
-      return DBUtils.createEntity<PitchDocument, PitchDto, keyof PitchDocument>(
+      return DBUtils.createEntity(
         this.pitchModel,
         body,
         PITCH_ATTRIBUTES,
@@ -68,5 +64,70 @@ export class RegistrationService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async findRegistrations(): Promise<AppResponse<TakeoverResponse[]>> {
+    return DBUtils.findEntities(
+      this.takeoverModel,
+      TAKEOVER_ATTRIBUTES,
+      'Registrations retrieved successfully',
+    );
+  }
+
+  async findRegistration(
+    id: string,
+  ): Promise<AppResponse<TakeoverResponse | null>> {
+    const filter = { _id: id };
+
+    return DBUtils.findEntity(
+      this.takeoverModel,
+      filter,
+      TAKEOVER_ATTRIBUTES,
+      'Registration retrieved successfully',
+      'Registration Not Found',
+    );
+  }
+
+  async findCampRegistrations(): Promise<AppResponse<CampResponse[]>> {
+    return DBUtils.findEntities(
+      this.campModel,
+      CAMP_ATTRIBUTES,
+      'Camp registrations retrieved successfully',
+    );
+  }
+
+  async findCampRegistration(
+    id: string,
+  ): Promise<AppResponse<CampResponse | null>> {
+    const filter = { _id: id };
+
+    return DBUtils.findEntity(
+      this.campModel,
+      filter,
+      CAMP_ATTRIBUTES,
+      'Camp registration retrieved successfully',
+      'Camp Registration Not Found',
+    );
+  }
+  async findPitchRegistrations(): Promise<AppResponse<PitchResponse[]>> {
+    return DBUtils.findEntities(
+      this.pitchModel,
+      PITCH_ATTRIBUTES,
+      'Pitch registrations retrieved successfully',
+    );
+  }
+
+  async findPitchRegistration(
+    id: string,
+  ): Promise<AppResponse<PitchResponse | null>> {
+    const filter = { _id: id };
+
+    return DBUtils.findEntity(
+      this.pitchModel,
+      filter,
+      PITCH_ATTRIBUTES,
+      'Pitch registration retrieved successfully',
+      'Pitch Registration Not Found',
+    );
   }
 }

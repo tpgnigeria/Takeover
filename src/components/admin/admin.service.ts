@@ -50,11 +50,7 @@ export class AdminService {
     createAdminDto: CreateAdminDto,
   ): Promise<AppResponse<AdminResponse>> {
     try {
-      return DBUtils.createEntity<
-        AdminDocument,
-        CreateAdminDto,
-        keyof AdminDocument
-      >(
+      return DBUtils.createEntity(
         this.adminModel,
         createAdminDto,
         ADMIN_ATTRIBUTES,

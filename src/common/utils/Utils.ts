@@ -64,7 +64,7 @@ export class DBUtils {
     );
   }
 
-  static async findEntity<T, K extends keyof T>(
+  static async findEntities<T, K extends keyof T>(
     model: Model<T>,
     attributes: readonly K[],
     message: string,
@@ -83,7 +83,7 @@ export class DBUtils {
     );
   }
 
-  static async findOneEntity<T, K extends keyof T>(
+  static async findEntity<T, K extends keyof T>(
     model: Model<T>,
     filter: Record<string, any>,
     attributes: readonly K[],
@@ -92,8 +92,10 @@ export class DBUtils {
   ): Promise<AppResponse<Pick<T, K> | null>> {
     const entity = await model.findOne(filter).lean().exec();
 
+    const errorDescription = `No ${errorMessage.split(' ')[0]} found for ${Object.keys(filter)[0]}: ${Object.values(filter)[0]}`;
+
     if (!entity) {
-      throw new NotFoundException(errorMessage, '');
+      throw new NotFoundException(errorMessage, errorDescription);
     }
 
     return successResponse(
