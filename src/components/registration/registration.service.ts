@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -9,7 +9,6 @@ import { Camp, CampDocument } from './entities/camp.entities';
 import { Pitch, PitchDocument } from './entities/pitch.registration';
 import { PitchDto } from './dto/create-pitch.dto';
 
-import { successResponse } from '../../common/app';
 import { Utils } from '../../common/utils';
 import { AppResponse } from '../../common/types';
 import {
@@ -33,35 +32,25 @@ export class RegistrationService {
   async createTakeover(
     body: TakeoverDto,
   ): Promise<AppResponse<TakeoverResponse>> {
-    try {
-      const attendee = new this.takeoverModel(body);
-      const savedAttendee = await attendee.save();
-
-      return successResponse(
-        'Takeover registration created successfully',
-        Utils.pickAttributes(
-          savedAttendee.toObject(),
-          TAKEOVER_ATTRIBUTES as (keyof Takeover)[],
-        ),
-        HttpStatus.CREATED,
-      );
-    } catch (error) {
-      throw error;
-    }
+    return Utils.createEntity<
+      TakeoverDocument,
+      TakeoverDto,
+      keyof TakeoverDocument
+    >(
+      this.takeoverModel,
+      body,
+      TAKEOVER_ATTRIBUTES,
+      'Takeover registration created successfully',
+    );
   }
 
   async createCamp(body: CampDto): Promise<AppResponse<CampResponse>> {
     try {
-      const camp = new this.campModel(body);
-      const savedCamp = await camp.save();
-
-      return successResponse(
+      return Utils.createEntity<CampDocument, CampDto, keyof CampDocument>(
+        this.campModel,
+        body,
+        CAMP_ATTRIBUTES,
         'Camp registration created successfully',
-        Utils.pickAttributes(
-          savedCamp.toObject(),
-          CAMP_ATTRIBUTES as (keyof Camp)[],
-        ),
-        HttpStatus.CREATED,
       );
     } catch (error) {
       throw error;
@@ -70,16 +59,15 @@ export class RegistrationService {
 
   async createPitch(body: PitchDto): Promise<AppResponse<PitchResponse>> {
     try {
-      const pitch = new this.pitchModel(body);
-      const savedPitch = await pitch.save();
-
-      return successResponse(
+      return Utils.createEntity<
+        PitchDocument,
+        PitchDto,
+        keyof PitchDocument
+      >(
+        this.pitchModel,
+        body,
+        PITCH_ATTRIBUTES,
         'Pitch registration created successfully',
-        Utils.pickAttributes(
-          savedPitch.toObject(),
-          PITCH_ATTRIBUTES as (keyof Pitch)[],
-        ),
-        HttpStatus.CREATED,
       );
     } catch (error) {
       throw error;

@@ -1,11 +1,14 @@
-import { PaginatedResponse } from '../types';
+import { HttpStatus } from '@nestjs/common';
+import { successResponse } from '../app';
+import { AppResponse, PaginatedResponse } from '../types';
+import { Model, Document } from 'mongoose';
 
 export class Utils {
-  static pickAttributes<T>(obj: T, keys: (keyof T)[]): Partial<T> {
+  static pickAttributes<T, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> {
     return keys.reduce((acc, key) => {
       acc[key] = obj[key];
       return acc;
-    }, {} as Partial<T>);
+    }, {} as Pick<T, K>);
   }
 
   static paginateResponse<T = any>(
@@ -32,5 +35,23 @@ export class Utils {
 
   static calcSkip(page: number, limit: number) {
     return (page - 1) * limit;
+  }
+
+  static async createEntity<T extends Document, Dto, K extends keyof T>(
+    model: Model<T>, // the Mongoose model
+    dto: Dto, // DTO used for creation
+    attributes: readonly K[], // fields to return
+    message: string,
+  ): Promise<AppResponse<Pick<T, K>>> {
+    const instance = new model(dto);
+    const saved = await instance.save();
+
+    const plain = saved.toObject() as T;
+
+    return successResponse(
+      message,
+      this.pickAttributes<T, K>(plain, attributes),
+      HttpStatus.CREATED,
+    );
   }
 }

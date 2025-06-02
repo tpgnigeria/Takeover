@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { verify } from 'argon2';
@@ -50,16 +50,15 @@ export class AdminService {
     createAdminDto: CreateAdminDto,
   ): Promise<AppResponse<AdminResponse>> {
     try {
-      const newAdmin = new this.adminModel(createAdminDto);
-      const savedAdmin = await newAdmin.save();
-
-      return successResponse(
+      return Utils.createEntity<
+        AdminDocument,
+        CreateAdminDto,
+        keyof AdminDocument
+      >(
+        this.adminModel,
+        createAdminDto,
+        ADMIN_ATTRIBUTES,
         'Admin created successfully',
-        Utils.pickAttributes(
-          savedAdmin.toObject(),
-          ADMIN_ATTRIBUTES as (keyof Admin)[]
-        ),
-        HttpStatus.CREATED,
       );
     } catch (error) {
       throw error;
